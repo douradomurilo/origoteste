@@ -19,4 +19,6 @@ Route::namespace('Api')->group(function() {
     Route::get('clients/{client}/plans', 'ClientsController@showPlans');
     Route::post('clients/{client}/plan', 'ClientsController@addPlan');
     Route::delete('clients/{client}/plan', 'ClientsController@removePlan');
+
+    Route::get('states/cities/{state}', 'StatesController@cities');
 });

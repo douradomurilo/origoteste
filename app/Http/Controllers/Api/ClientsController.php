@@ -36,8 +36,7 @@ class ClientsController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:clients',
-            'city' => 'required|string|max:255',
-            'state' => 'required|string|max:2'
+            'city' => 'required|integer',
         ]);
 
         if ($validator->fails()) {
@@ -47,19 +46,19 @@ class ClientsController extends Controller
         $client = new Client;
         $client->name = $request->name;
         $client->email = $request->email;
-        $client->phone = $request->phone;
-        $client->birthdate = $request->birthdate;
+        $client->phone = $request->phone ?? '';
+        $client->birthdate = $request->birthdate ?? null;
+        $client->city_id = $request->city;
+        
+        if ($client->save()) {
+            $client->plans()->detach();
 
-        $state = State::where('uf', $request->state)->first();
-        if (!isset($state->id))
-            return response()->json(['error' => 'Estado inválido']);
-
-        $city = City::where([['name', '=', $request->city], ['state_id', '=', $state->id]])->first();
-        if (!isset($city->id))
-            return response()->json(['error' => 'Cidade inválida']);
-
-        $client->city_id = $city->id;
-        $client->save();
+            if (isset($request->plans)) {
+                foreach ($request->plans as $plan) {
+                    $client->plans()->attach($plan);
+                }
+            }
+        }
 
         return response()->json($client);
     }
@@ -90,10 +89,9 @@ class ClientsController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'string|max:255',
-            'email' => 'email',
-            'city' => 'string|max:255',
-            'state' => 'string|max:2'
+            'name' => 'required|string|max:255',
+            'email' => 'required|email',
+            'city' => 'required|integer'
         ]);
 
         if ($validator->fails()) {
@@ -109,17 +107,17 @@ class ClientsController extends Controller
         $client->email = $request->email;
         $client->phone = $request->phone;
         $client->birthdate = $request->birthdate;
+        $client->city_id = $request->city;
+        
+        if ($client->save()) {
+            $client->plans()->detach();
 
-        $state = State::where('uf', $request->state)->first();
-        if (!isset($state->id))
-            return response()->json(['error' => 'Estado inválido']);
-
-        $city = City::where([['name', '=', $request->city], ['state_id', '=', $state->id]])->first();
-        if (!isset($city->id))
-            return response()->json(['error' => 'Cidade inválida']);
-
-        $client->city_id = $city->id;
-        $client->save();
+            if (isset($request->plans)) {
+                foreach ($request->plans as $plan) {
+                    $client->plans()->attach($plan);
+                }
+            }
+        }
 
         return response()->json($client);
     }

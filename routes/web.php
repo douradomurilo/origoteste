@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', [App\Http\Controllers\HomeController::class, 'index']);
+Route::get('/edit-client/{client}', [App\Http\Controllers\HomeController::class, 'editClient']);
+Route::get('/new-client', [App\Http\Controllers\HomeController::class, 'newClient']);
 
 Auth::routes();
 
