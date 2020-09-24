@@ -24,8 +24,23 @@ $(document).ready(function () {
         event.preventDefault();
         data = $(this).serialize();
 
-        $.post('/api/clients', data, function () {
-            window.location.href='/';
+        $.post('/api/clients', data, function (data) {
+
+            let message;
+            message = ('error' in data) ? data.error : data.message;
+
+            $('#message').find('#text').html(message);
+
+            $('#message').modal({
+                backdrop: 'static',
+                keyboard: false
+            });
+
+            if (!('error' in data)) {
+                setTimeout(function () {
+                    window.location.href = '/';
+                }, 2000);
+            }
         });
     });
 
@@ -37,8 +52,23 @@ $(document).ready(function () {
             url: '/api/clients/' + $('#clientId').val(),
             type: 'PUT',
             data: data,
-            success: function () {
-                window.location.href = '/';
+            success: function (data) {
+
+                let message;
+                message = ('error' in data) ? data.error : data.message;
+
+                $('#message').find('#text').html(message);
+
+                $('#message').modal({
+                    backdrop: 'static',
+                    keyboard: false
+                });
+
+                if (!('error' in data)) {
+                    setTimeout(function () {
+                        window.location.href = '/';
+                    }, 2000);
+                }
             }
         });
     });
@@ -48,7 +78,7 @@ $(document).ready(function () {
     $('table#clients').find('.btn-danger').click(function () {
 
         btn = $(this);
-        clientId = (btn.parents('tr').find('th').text());
+        clientId = (btn.parents('tr').data('id'));
 
         $('#confirm').modal({
             backdrop: 'static',
@@ -60,8 +90,27 @@ $(document).ready(function () {
         $.ajax({
             url: '/api/clients/' + clientId,
             type: 'DELETE',
-            success: function () {
-                window.location.href = '/';
+            success: function (data) {
+
+                $('#confirm').modal('hide');
+
+                let message;
+                message = ('error' in data) ? data.error : data.message;
+
+                $('#message').find('#text').html(message);
+
+                $('#message').modal({
+                    backdrop: 'static',
+                    keyboard: false
+                });
+
+                if (!('error' in data)) {
+                    $('tr[data-id="' + clientId + '"]').remove();
+
+                    setTimeout(function () {
+                        $('#message').modal('hide');
+                    }, 2000);
+                }
             }
         });
     });

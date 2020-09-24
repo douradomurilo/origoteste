@@ -60,7 +60,7 @@ class ClientsController extends Controller
             }
         }
 
-        return response()->json($client);
+        return response()->json(['message' => 'Cliente cadastrado com sucesso!']);
     }
 
     /**
@@ -119,7 +119,7 @@ class ClientsController extends Controller
             }
         }
 
-        return response()->json($client);
+        return response()->json(['message' => 'Cliente atualizado com sucesso!']);
     }
 
     /**
@@ -138,8 +138,9 @@ class ClientsController extends Controller
 
             // testa se o cliente é de SP e possui o plano Free
             if (($client->city->state->uf == 'SP') && ($client->plans->contains($free_plan->id)))
-                return response()->json(['message' => 'Este cliente não pode ser deletado por ser de SP e possuir o plano gratuito']);
+                return response()->json(['error' => 'Este cliente não pode ser deletado por ser de SP e possuir o plano gratuito']);
             
+            $client->plans()->detach();
             $client->delete();
             
             return response()->json(['message' => 'Cliente deletado com sucesso!']);

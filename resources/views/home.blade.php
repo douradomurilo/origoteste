@@ -23,7 +23,7 @@
                         </thead>
                         <tbody>
                             @foreach ($clients as $client)
-                                <tr>
+                                <tr data-id="{{ $client->id }}">
                                     <th scope="row">{{ $client->id }}</th>
                                     <td>{{ $client->name }}</td>
                                     <td>{{ $client->email }}</td>
@@ -56,6 +56,25 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-danger">Deletar</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="message" class="modal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Mensagem</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p id="text"></p>
+      </div>
+      <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
       </div>
     </div>
